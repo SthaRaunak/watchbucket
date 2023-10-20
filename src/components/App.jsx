@@ -15,25 +15,34 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     async function fetchMovies() {
       try {
         setIsLoading(true);
         const res = await fetch(
           `http://www.omdbapi.com/?apikey=${apiKey}&${
             query ? "s=" + query : "s=movies"
-          }`
+          }`,
+          { signal: controller.signal }
         );
         const data = await res.json();
-        console.log(data);
+        console.log(data.Search);
         setMovies(data.Search);
       } catch (error) {
-        console.error(error.message);
+        if (error.name !== "AbortError") {
+          console.error(error.message);
+        }
       } finally {
         setIsLoading(false);
       }
     }
 
     fetchMovies();
+
+    return () => {
+      controller.abort();
+    };
   }, [query]);
 
   return (
@@ -46,7 +55,7 @@ function App() {
             element={
               <Home>
                 <Search query={query} setQuery={setQuery} />
-                {isLoading ? <Loader /> : <SearchedMovieList />}
+                {isLoading ? <Loader /> : <SearchedMovieList movies={movies} />}
               </Home>
             }
           />
