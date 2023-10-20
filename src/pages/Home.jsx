@@ -1,5 +1,5 @@
-function Home() {
-  return <div>Home : This will be the place where user will search for movies</div>;
+function Home({ children }) {
+  return <>{children}</>;
 }
 
 export default Home;
