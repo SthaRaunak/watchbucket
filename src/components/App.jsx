@@ -5,16 +5,19 @@ import Home from "../pages/Home";
 import Navbar from "./Navbar";
 import SearchedMovieList from "./SearchedMovieList";
 import Search from "./Search";
+import Loader from "./Loader";
 
 const apiKey = import.meta.env.VITE_OMDB_API_KEY;
 
 function App() {
   const [movies, setMovies] = useState([]);
   const [query, setQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchMovies() {
       try {
+        setIsLoading(true);
         const res = await fetch(
           `http://www.omdbapi.com/?apikey=${apiKey}&${
             query ? "s=" + query : "s=movies"
@@ -25,6 +28,8 @@ function App() {
         setMovies(data.Search);
       } catch (error) {
         console.error(error.message);
+      } finally {
+        setIsLoading(false);
       }
     }
 
@@ -41,7 +46,7 @@ function App() {
             element={
               <Home>
                 <Search query={query} setQuery={setQuery} />
-                <SearchedMovieList />
+                {isLoading ? <Loader /> : <SearchedMovieList />}
               </Home>
             }
           />
