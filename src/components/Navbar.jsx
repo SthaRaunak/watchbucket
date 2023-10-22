@@ -2,8 +2,8 @@ import { Link, NavLink } from "react-router-dom";
 
 function Navbar() {
   return (
-    <section className="bg-slate-900 py-5">
-      <nav className="max-w-[1200px] mx-auto px-5">
+    <section className="border-b-2 border-gray-500 py-5">
+      <nav className="max-w-[1200px] mx-auto ps-3 pe-5">
         <div className="flex justify-between text-white items-center">
           <Logo />
           <NavItems />
