@@ -28,6 +28,7 @@ function App() {
           { signal: controller.signal }
         );
         const data = await res.json();
+        console.log(data.Search)
         setMovies(data.Search);
       } catch (error) {
         if (error.name !== "AbortError") {
