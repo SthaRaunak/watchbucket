@@ -1,11 +1,12 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useState, useEffect } from "react";
-import Dashboard from "../pages/Dashboard";
-import Home from "../pages/Home";
-import Navbar from "./Navbar";
-import SearchedMovieList from "./SearchedMovieList";
-import Search from "./Search";
-import Loader from "./Loader";
+import Dashboard from "./pages/Dashboard";
+import Home from "./pages/Home";
+import Navbar from "./components/Navbar";
+import SearchedMovieList from "./components/SearchedMovieList";
+import Search from "./components/Search";
+import Loader from "./components/Loader";
+import Movie from "./components/Movie";
 
 const apiKey = import.meta.env.VITE_OMDB_API_KEY;
 
@@ -27,7 +28,6 @@ function App() {
           { signal: controller.signal }
         );
         const data = await res.json();
-        console.log(data.Search);
         setMovies(data.Search);
       } catch (error) {
         if (error.name !== "AbortError") {
@@ -50,6 +50,7 @@ function App() {
       <BrowserRouter>
         <Navbar />
         <Routes>
+          <Route path="/:id" element={<Movie />} />
           <Route
             path="/"
             element={

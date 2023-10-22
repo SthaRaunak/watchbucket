@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function SearchedMovieList({ movies }) {
   return (
     <div className="max-w-[1200px] mx-auto px-5 pt-9">
@@ -15,14 +17,17 @@ function SearchedMovieList({ movies }) {
 
 function Movie({ movie }) {
   return (
-    <div className="flex w-full py-5 border-b-[1px] border-gray-700 items-center cursor-pointer">
+    <Link
+      to={`${movie.imdbID}`}
+      className="flex w-full py-5 border-b-[1px] border-gray-700 items-center cursor-pointer"
+    >
       <p className="w-[15%] text-gray-400 text-sm">{movie.Year}</p>
       <div className="w-[75%] flex gap-5 items-center">
         <img src={movie.Poster} alt="" className="w-[50px] h-[75px]" />
         <h5 className="md:text-[1.2rem] text-gray-200 pe-3">{movie.Title}</h5>
       </div>
       <p className="w-[10%]  text-gray-400 text-sm">{movie.Type}</p>
-    </div>
+    </Link>
   );
 }
 
