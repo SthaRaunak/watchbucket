@@ -2,7 +2,7 @@ import { Link, NavLink } from "react-router-dom";
 
 function Navbar() {
   return (
-    <section className="border-b-2 border-gray-500 py-5">
+    <section className="border-b-2 border-gray-500 py-3 bg-gradient-to-r from-indigo-900 from-10% via-purple-900 via-30% to-emerald-900 to-90%">
       <nav className="max-w-[1200px] mx-auto ps-3 pe-5">
         <div className="flex justify-between text-white items-center">
           <Logo />
