@@ -1,17 +1,20 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
-function SearchedMovieList({ movies }) {
+
+function SearchedMovieList({ movies , setSortBy , sortBy   }) {
+  
   return (
     <div className="max-w-[1200px] mx-auto px-5 pt-5">
       <div className="flex gap-5 items-center">
         <p className="text-gray-400 font-medium">Sort By: </p>
-        <button className="bg-[#131617] px-4 py-1 rounded-xl hover:bg-[#35383A] ease-linear duration-75">
+        <button className={`bg-[#131617] px-4 py-1 rounded-xl hover:bg-[#35383A] ease-linear duration-75 ${sortBy === "relevance"? "border-[0.5px] border-gray-400": ""}`} onClick={()=>setSortBy("relevance")}>
           Relevance
         </button>
-        <button className="bg-[#131617] px-4 py-1 rounded-xl hover:bg-[#35383A] ease-linear duration-75">
+        <button className={`bg-[#131617] px-4 py-1 rounded-xl hover:bg-[#35383A] ease-linear duration-75 ${sortBy === "date"? "border-[0.5px] border-gray-400": ""}`}   onClick={()=>setSortBy("date")}>
           Release date
         </button>
-        <button className="bg-[#131617] px-4 py-1 rounded-xl hover:bg-[#35383A] ease-linear duration-75">
+        <button className={`bg-[#131617] px-4 py-1 rounded-xl hover:bg-[#35383A] ease-linear duration-75 ${sortBy === "title"? "border-[0.5px] border-gray-400": ""}`}  onClick={()=>setSortBy("title")}>
           By Title
         </button>
       </div>

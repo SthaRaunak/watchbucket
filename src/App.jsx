@@ -14,6 +14,7 @@ function App() {
   const [movies, setMovies] = useState([]);
   const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [sortBy, setSortBy] = useState("relevance");
 
   useEffect(() => {
     const controller = new AbortController();
@@ -28,7 +29,7 @@ function App() {
           { signal: controller.signal }
         );
         const data = await res.json();
-        console.log(data.Search)
+        console.log(data.Search);
         setMovies(data.Search);
       } catch (error) {
         if (error.name !== "AbortError") {
@@ -46,18 +47,45 @@ function App() {
     };
   }, [query]);
 
+  let sortedMovies;
+
+  if (sortBy === "relevance") sortedMovies = movies?.slice();
+
+  if (sortBy === "title")
+    sortedMovies = movies
+      ?.slice()
+      .sort((a, b) => a.Title.localeCompare(b.Title));
+
+  if (sortBy === "date")
+    sortedMovies = movies
+      ?.slice()
+      .sort(
+        (a, b) =>
+          (b.Year.length > 4 ? b.Year.slice(0, 4) : b.Year) -
+          (a.Year.length > 4 ? a.Year.slice(0, 4) : a.Year)
+      );
+
   return (
     <>
       <BrowserRouter>
         <Navbar />
         <Routes>
           <Route path="/:id" element={<Movie />} />
+
           <Route
             path="/"
             element={
               <Home>
                 <Search query={query} setQuery={setQuery} />
-                {isLoading ? <Loader /> : <SearchedMovieList movies={movies} />}
+                {isLoading ? (
+                  <Loader />
+                ) : (
+                  <SearchedMovieList
+                    movies={sortedMovies}
+                    setSortBy={setSortBy}
+                    sortBy={sortBy}
+                  />
+                )}
               </Home>
             }
           />
