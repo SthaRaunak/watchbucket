@@ -7,6 +7,7 @@ import SearchedMovieList from "./components/SearchedMovieList";
 import Search from "./components/Search";
 import Loader from "./components/Loader";
 import Movie from "./components/Movie";
+import ErrorMessage from "./components/ErrorMessage";
 
 const apiKey = import.meta.env.VITE_OMDB_API_KEY;
 
@@ -15,6 +16,7 @@ function App() {
   const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [sortBy, setSortBy] = useState("relevance");
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -28,17 +30,22 @@ function App() {
           }`,
           { signal: controller.signal }
         );
+        if (!res.ok)
+          throw new Error("Something went wrong with fetching movies");
         const data = await res.json();
         console.log(data.Search);
+        if (data.Search === undefined) throw new Error("No Results Found");
         setMovies(data.Search);
       } catch (error) {
         if (error.name !== "AbortError") {
+          setError(error.message);
           console.error(error.message);
         }
       } finally {
         setIsLoading(false);
       }
     }
+    setError(null);
 
     fetchMovies();
 
@@ -77,9 +84,9 @@ function App() {
             element={
               <Home>
                 <Search query={query} setQuery={setQuery} />
-                {isLoading ? (
-                  <Loader />
-                ) : (
+                {isLoading && <Loader />}
+                {error && <ErrorMessage errorMessage={error} />}
+                {!isLoading && !error && (
                   <SearchedMovieList
                     movies={sortedMovies}
                     setSortBy={setSortBy}
