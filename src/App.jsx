@@ -1,13 +1,13 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
-import Navbar from "./components/Navbar";
 import SearchedMovieList from "./components/SearchedMovieList";
 import Search from "./components/Search";
 import Loader from "./components/Loader";
 import Movie from "./components/Movie";
 import ErrorMessage from "./components/ErrorMessage";
+import AppLayout from "./ui/AppLayout";
 
 const apiKey = import.meta.env.VITE_OMDB_API_KEY;
 
@@ -17,6 +17,9 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [sortBy, setSortBy] = useState("relevance");
   const [error, setError] = useState(null);
+  const [watched, setWatched] = useState([]);
+  const [planToWatch, setPlanToWatch] = useState([]);
+  const [watching, setWatching] = useState([]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -34,7 +37,7 @@ function App() {
           throw new Error("Something went wrong with fetching movies");
         const data = await res.json();
         console.log(data.Search);
-        if (data.Search === undefined) throw new Error("No Results Found");
+        if (data.Response === "False") throw new Error("No Results Found");
         setMovies(data.Search);
       } catch (error) {
         if (error.name !== "AbortError") {
@@ -72,31 +75,47 @@ function App() {
           (a.Year.length > 4 ? a.Year.slice(0, 4) : a.Year)
       );
 
+  const addWatched = (movie) => {
+    setWatched((state) => [...state, movie]);
+  };
+  const addPlanToWatch = (movie) => {
+    setPlanToWatch((state) => [...state, movie]);
+  };
+
   return (
     <>
       <BrowserRouter>
-        <Navbar />
         <Routes>
-          <Route path="/:id" element={<Movie />} />
-
-          <Route
-            path="/"
-            element={
-              <Home>
-                <Search query={query} setQuery={setQuery} />
-                {isLoading && <Loader />}
-                {error && <ErrorMessage errorMessage={error} />}
-                {!isLoading && !error && (
-                  <SearchedMovieList
-                    movies={sortedMovies}
-                    setSortBy={setSortBy}
-                    sortBy={sortBy}
-                  />
-                )}
-              </Home>
-            }
-          />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route element={<AppLayout />}>
+            <Route index element={<Navigate replace to="/search" />} />
+            <Route
+              path="/movies/:id"
+              element={
+                <Movie
+                  addWatched={addWatched}
+                  addPlanToWatch={addPlanToWatch}
+                />
+              }
+            />
+            <Route
+              path="/search"
+              element={
+                <Home>
+                  <Search query={query} setQuery={setQuery} />
+                  {isLoading && <Loader />}
+                  {error && <ErrorMessage errorMessage={error} />}
+                  {!isLoading && !error && (
+                    <SearchedMovieList
+                      movies={sortedMovies}
+                      setSortBy={setSortBy}
+                      sortBy={sortBy}
+                    />
+                  )}
+                </Home>
+              }
+            />
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </>

@@ -4,7 +4,7 @@ import Loader from "./Loader";
 
 const apiKey = import.meta.env.VITE_OMDB_API_KEY;
 
-function Movie() {
+function Movie({addWatched,addPlanToWatch}) {
   const [movieDetail, setMovieDetail] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const { id } = useParams();
@@ -29,14 +29,16 @@ function Movie() {
   }, [id]);
 
   const { Title: title } = movieDetail;
-  
+
   if (isLoading) {
     return <Loader />;
   }
   return (
-    <div className="text-5xl">
+    <div>
       <h2>{title}</h2>
       <h2>{id}Here movie detail will be shown</h2>
+      <button className="border px-4 py-1 pe-5" onClick={()=>addWatched(movieDetail)}>Add to watch list</button>
+      <button className="border px-4 py-1" onClick={()=>addPlanToWatch(movieDetail)}>Add to plan to watch</button>
     </div>
   );
 }
